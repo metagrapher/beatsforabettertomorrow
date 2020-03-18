@@ -7,59 +7,12 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloClient } from 'apollo-boost';
 import { AUTH_TOKEN } from '../constants';
 import Config from '../config';
-import { ReactComponent as Logo } from '../static/images/starter-kit-logo.svg';
+import { ReactComponent as Logo } from '../static/images/Logo.svg';
 
-/**
- * GraphQL page query
- * Gets page's title and content using slug as uri
- */
-const PAGE_QUERY = gql`
-  query PageQuery($uri: String!) {
-    pageBy(uri: $uri) {
-      title
-      content
-    }
-  }
-`;
+import { default as PAGE_QUERY } from '../queries/Page';
+import { default as PAGES_AND_CATEGORIES_QUERY } from '../queries/PagesAndPosts';
+import { default as PROTECTED_QUERY } from '../queries/Protected';
 
-/**
- * GraphQL pages and categories query
- * Gets all available pages and posts titles and slugs
- */
-const PAGES_AND_CATEGORIES_QUERY = gql`
-  query PagesAndPostsQuery {
-    posts {
-      edges {
-        node {
-          title
-          slug
-        }
-      }
-    }
-    pages {
-      edges {
-        node {
-          title
-          slug
-        }
-      }
-    }
-  }
-`;
-
-/**
- * GraphQL protected query, an example of an authenticated query
- * If not authenticated it will return an error
- * If authenticated it will return the viewer's id and username
- */
-const PROTECTED_QUERY = gql`
-  query ProtectedQuery {
-    viewer {
-      userId
-      username
-    }
-  }
-`;
 
 class Home extends Component {
   state = {
@@ -143,20 +96,15 @@ class Home extends Component {
     const result = await client.query({
       query: PAGES_AND_CATEGORIES_QUERY,
     });
-    let posts = result.data.posts.edges;
-    posts = posts.map(post => {
-      const finalLink = `/post/${post.node.slug}`;
-      const modifiedPost = { ...post };
-      modifiedPost.node.link = finalLink;
-      return modifiedPost;
-    });
-    let pages = result.data.pages.edges;
-    pages = pages.map(page => {
-      const finalLink = `/page/${page.node.slug}`;
-      const modifiedPage = { ...page };
-      modifiedPage.node.link = finalLink;
-      return modifiedPage;
-    });
+    const modifiedPosts = (type) => ( elm =>{
+      const finalLink = `/${type}/${elm.node.slug}`
+      const modifiedElm = { ...elm }
+      modifiedElm.node.link = finalLink
+      return modifiedElm
+    })
+    const elems = (edges, type) => edges.map(modifiedPosts(type))
+    const posts = elems(result.data.posts.edges, 'posts')
+    const pages = elems(result.data.pages.edges, 'pages');
 
     this.setState({ posts, pages });
   };
@@ -165,27 +113,27 @@ class Home extends Component {
     const { page, posts, pages } = this.state;
     return (
       <div>
-        <div className="graphql intro bg-black white ph3 pv4 ph5-m pv5-l flex flex-column flex-row-l">
+        <div className="graphql intro bg-black white ph3 pv4 ph5-m pv5-l flex flex-column flex-row-l hero-1">
           <div className="color-logo w-50-l mr3-l">
             <Logo width={440} height={280} />
           </div>
           <div className="subhed pr6-l">
             <h1>{page.title}</h1>
             <div className="dek">
-              You are now running a WordPress backend with a React frontend.
+              Hundreds of survice industry and gig economy people are suddenly without work. Without gatherings, they are unemployed.
             </div>
             <div className="api-info b mt4">
-              Starter Kit supports both REST API and GraphQL
+              Please consider donating the tip you would normally spend on a night out, a bar tab, or cab fare. Just the tip.
               <div className="api-toggle">
-                <a className="rest" href="http://localhost:3000">REST API</a>
-                <a className="graphql" href="http://localhost:3001">GraphQL</a>
+                <a className="rest" href="http://localhost:3000">Paypal</a>
+                <a className="graphql" href="http://localhost:3001">Venmo</a>
               </div>
             </div>
           </div>
         </div>
         <div className="recent flex mh4 mt4 w-two-thirds-l center-l">
           <div className="w-50 pr3">
-            <h2>Posts</h2>
+            <h2>News</h2>
             <ul>
               {posts.map(post => (
                 <li key={post.node.slug}>
@@ -197,7 +145,7 @@ class Home extends Component {
             </ul>
           </div>
           <div className="w-50 pl3">
-            <h2>Pages</h2>
+            <h2>Info</h2>
             <ul>
               {pages.map(post => {
                 if (post.node.slug !== 'welcome') {
@@ -215,13 +163,6 @@ class Home extends Component {
             </ul>
           </div>
         </div>
-        <div className="content mh4 mv4 w-two-thirds-l center-l home"
-          // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{
-            __html: page.content,
-          }}
-        />
-      </div>
     );
   }
 }

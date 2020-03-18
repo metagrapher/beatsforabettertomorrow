@@ -41,6 +41,14 @@ li {
   padding: 1rem 0;
 }
 
+.hero-1 {
+  background: url('../static/images/pexels-photo-2494704.jpeg'),  rgba(0,0,0,.5);
+  background-size: cover;
+  background-position-x: 60%;
+  background-position-y: 35%;
+  background-blend-mode: multiply;
+}
+
 .content {
   /*
    * 16.25rem footer
@@ -118,7 +126,7 @@ li {
   }
 }
 
-.starter-kit-logo {
+.starter-kit-logo, .B4BTLogo {
   display: flex;
   justify-content: center;
   font-weight: bold;
@@ -177,10 +185,6 @@ li {
 .color-logo {
   display: flex;
   justify-content: center;
-
-  svg path {
-    fill: #5A3BEB;
-  }
 }
 
 .recent {
@@ -254,9 +258,6 @@ li {
 
 .graphql {
   .color-logo {
-    svg path {
-      fill: #EE185D;
-    }
   }
 
   .api-toggle {

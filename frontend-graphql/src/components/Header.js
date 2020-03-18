@@ -5,7 +5,7 @@ import { withApollo } from 'react-apollo';
 import { compose } from 'recompose';
 import gql from 'graphql-tag';
 import { AUTH_TOKEN, USERNAME } from '../constants';
-import { ReactComponent as Logo } from '../static/images/starter-kit-logo.svg';
+import { ReactComponent as Logo } from '../static/images/heartIconLogo.svg';
 import { ReactComponent as SearchIcon } from '../static/images/search.svg';
 
 /**
@@ -56,19 +56,18 @@ class Header extends Component {
           <div className="brand bb flex justify-center items-center w-100 justify-between-l bn-l">
             <Link
               to="/"
-              className="starter-kit-logo"
+              className="B4BTLogo"
             >
               <Logo width={48} height={32}/>
               <div className="pl2">
-                WordPress + React<br/>
-                Starter Kit
+                Beats for a<br/>
+                Better Tomorrow<br/>
               </div>
             </Link>
           </div>
           <div className="links dn flex-l justify-between items-center">
-            {menus.map(menu => {
-              if (isInternal(menu.type)) {
-                return (
+            {menus.map(menu => ( isInternal(menu.type) ?
+                (
                   <Link
                     key={menu.label}
                     to={menu.url}
@@ -76,18 +75,16 @@ class Header extends Component {
                   >
                     {menu.label}
                   </Link>
-                );
-              }
-              return (
-                <a
-                  key={menu.label}
-                  href={menu.url}
-                  className="ml1 no-underline black"
-                >
-                  {menu.label}
-                </a>
-              );
-            })}
+                ) : (
+                  <a
+                    key={menu.label}
+                    href={menu.url}
+                    className="ml1 no-underline black"
+                  >
+                    {menu.label}
+                  </a>
+                ))
+            )}
 
             <Link to="/search">
               <SearchIcon width={25} height={25} />
